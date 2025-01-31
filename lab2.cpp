@@ -1,5 +1,5 @@
 //
-//modified by:
+//modified by: Carlos Moreno
 //date:
 //
 //original author: Gordon Griesel
@@ -9,6 +9,8 @@
 //This program needs some refactoring.
 //We will do this in class together.
 //
+//to do list
+//01/31/2025 add text
 //
 #include <iostream>
 #include <cstdlib>
@@ -21,6 +23,7 @@ using namespace std;
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
+#include "fonts.h"
 
 //some structures
 
@@ -75,6 +78,7 @@ int main()
 		x11.swapBuffers();
 		usleep(200);
 	}
+    cleanup_fonts();
 	return 0;
 }
 
@@ -128,7 +132,7 @@ void X11_wrapper::set_title()
 {
 	//Set the window title bar.
 	XMapWindow(dpy, win);
-	XStoreName(dpy, win, "3350 Lab-1");
+	XStoreName(dpy, win, "3350 Lab-2 - Esc to exit");
 }
 
 bool X11_wrapper::getXPending()
@@ -244,6 +248,10 @@ void init_opengl(void)
 	glOrtho(0, g.xres, 0, g.yres, -1, 1);
 	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
+
+    //Do this to enable fonts
+    glEnable(GL_TEXTURE_2D);
+    initialize_fonts();
 }
 
 void physics()
@@ -276,6 +284,17 @@ void render()
 		glVertex2f( g.w, -g.w);
 	glEnd();
 	glPopMatrix();
+    
+    Rect r;
+    //
+    r.bot = g.yres - 20;
+    r.left = 10;
+    r.center = 0;
+    ggprint8b(&r, 16, 0x00ff0000, "3350 - Lab2");
+    ggprint8b(&r, 16, 0x00ffff00, "Esc to exit");
+    ggprint8b(&r, 16, 0x00ffff00, "A to speed up");
+    ggprint8b(&r, 16, 0x00ffff00, "B to slow down");
+
 }
 
 
